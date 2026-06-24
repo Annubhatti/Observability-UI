@@ -1,0 +1,455 @@
+
+# Enterprise Observability Platform UI Prompt (React)
+
+Build a production-grade enterprise observability platform UI similar to Datadog, New Relic, Dynatrace, Grafana Cloud, and Elastic Observability.
+
+Technology Stack:
+
+* React 19
+* TypeScript
+* Vite
+* Material UI (MUI)
+* React Router
+* TanStack Query
+* Zustand
+* Recharts
+* React Flow (dependency maps)
+* Monaco Editor (query editors)
+* Axios
+
+Theme:
+
+* Modern enterprise SaaS
+* Dark Mode + Light Mode --> can be switched!
+* Responsive
+* Professional dashboard design
+* Support large datasets
+* Virtualized tables
+
+---
+
+## APPLICATION NAME
+
+Observability-UI
+
+---
+
+## LAYOUT
+
+Global Layout:
+
+* Left Sidebar Navigation
+* Top Header
+* Main Content Area
+* Notification Center
+* User Profile Menu
+
+Sidebar Sections:
+
+Dashboard
+Infrastructure
+Services
+Applications
+Metrics
+Logs
+Traces
+
+---
+
+1. DASHBOARD PAGE
+
+---
+
+Route:
+
+/dashboard
+
+Widgets:
+
+* Total Services
+* Healthy Services
+* Requests/sec
+* Error Rate
+* Avg Latency
+* Trace Volume
+* Log Volume
+
+Charts:
+
+* Request Trend
+* Error Trend
+* Service Health
+* Top Failing Services
+* Infrastructure Overview
+
+Backend APIs:
+
+GET /api/dashboard/overview
+GET /api/dashboard/errors
+GET /api/dashboard/services
+
+---
+
+2. INFRASTRUCTURE PAGE
+
+---
+
+Route:
+
+/infrastructure
+
+Tabs:
+
+Hosts
+Containers
+Kubernetes
+
+Hosts Table:
+
+Hostname
+IP
+CPU
+Memory
+Disk
+Status
+Last Seen
+
+Containers Table:
+
+Container
+Node
+CPU
+Memory
+Status
+
+Kubernetes Views:
+
+Clusters
+Nodes
+Namespaces
+Pods
+
+Backend APIs:
+
+GET /api/infrastructure/hosts
+GET /api/infrastructure/containers
+GET /api/k8s/clusters
+GET /api/k8s/pods
+
+---
+
+3. SERVICES PAGE
+
+---
+
+Route:
+
+/services
+
+Table Columns:
+
+Service
+Language
+Environment
+Version
+Requests/sec
+Error Rate
+Latency
+Status
+Last Seen
+
+Filters:
+
+Service Name
+Environment
+Language
+
+Click Service -> Details Page
+
+---
+
+4. SERVICE DETAILS PAGE
+
+---
+
+Route:
+
+/services/:serviceName
+
+Tabs:
+
+Overview
+Metrics
+Logs
+Traces
+Dependencies
+Deployments
+Errors
+
+Overview:
+
+* Service Health
+* Throughput
+* Error Rate
+* Latency
+
+Metrics:
+
+Charts
+
+Logs:
+
+Embedded Log Explorer
+
+Traces:
+
+Trace Table
+
+Dependencies:
+
+Interactive Dependency Graph
+
+Deployments:
+
+Release History
+
+Errors:
+
+Top Exceptions
+
+Backend APIs:
+
+GET /api/services/:service
+GET /api/services/:service/metrics
+GET /api/services/:service/logs
+GET /api/services/:service/traces
+GET /api/services/:service/dependencies
+
+---
+
+5. METRICS PAGE
+
+---
+
+Route:
+
+/metrics
+
+Features:
+
+Prometheus Explorer
+
+Query Editor
+
+PromQL Support
+
+Chart Types:
+
+Line
+Area
+Bar
+Gauge
+Table
+
+Time Range Selector:
+
+15m
+1h
+6h
+24h
+7d
+30d
+
+Backend API:
+
+POST /api/metrics/query
+
+---
+
+6. LOGS PAGE
+
+---
+
+Route:
+
+/logs
+
+Features:
+
+Log Explorer
+
+Filters:
+
+Service
+Container
+Severity
+Host
+Environment
+
+Search:
+
+Full Text Search
+
+Live Tail Toggle
+
+Table:
+
+Timestamp
+Service
+Level
+Message
+
+Expandable Log Row
+
+JSON Viewer
+
+Backend API:
+
+GET /api/logs/search
+
+---
+
+7. TRACES PAGE
+
+---
+
+Route:
+
+/traces
+
+Features:
+
+Trace Explorer
+
+Filters:
+
+Service
+Operation
+Duration
+Status
+
+Table:
+
+Trace ID
+Service
+Operation
+Duration
+Status
+Timestamp
+
+Trace Detail Drawer:
+
+Waterfall Timeline
+Span Tree
+Tags
+Attributes
+
+Backend APIs:
+
+GET /api/traces/search
+GET /api/traces/:traceId
+
+---
+
+8. ALERTS PAGE
+
+---
+
+Route:
+
+/alerts
+
+Table:
+
+Name
+Severity
+Status
+Created
+Last Triggered
+
+Create Alert Modal
+
+Fields:
+
+Name
+Query
+Threshold
+Severity
+
+Backend APIs:
+
+GET /api/alerts
+POST /api/alerts
+PUT /api/alerts/:id
+DELETE /api/alerts/:id
+
+---
+
+9. INCIDENTS PAGE
+
+---
+
+Route:
+
+/incidents
+
+Table:
+
+Title
+Severity
+Status
+Owner
+Created
+
+Incident Detail Page
+
+Timeline View
+
+Backend APIs:
+
+GET /api/incidents
+POST /api/incidents
+
+---
+
+10. SLOS PAGE
+
+---
+
+Route:
+
+/slos
+
+Cards:
+
+Availability
+Latency
+Error Budget
+
+Backend APIs:
+
+GET /api/slos
+POST /api/slos
+
+---
+
+11. DEPLOYMENTS PAGE
+
+---
+
+Route:
+
+/deployments
+
+Table:
+
+Version
+Environment
+Service
+Deployed By
+Time
+
+Backend APIs:
+
+GET /api/deployments
+P
