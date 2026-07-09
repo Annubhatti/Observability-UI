@@ -96,8 +96,8 @@ export default function InfrastructurePage() {
     document.title = 'Infrastructure | Observability';
   }, []);
 
-  const columns = tabData[activeTab].columns;
-  const statuses = statusVariants[activeTab];
+  const columns = tabData[activeTab]!.columns;
+  const statuses = statusVariants[activeTab]!;
   const statusColIndex = columns.findIndex((c) => c.label === 'Status');
 
   return (
@@ -186,8 +186,8 @@ export default function InfrastructurePage() {
                 <Box key={col.label} sx={{ width: col.width, pr: 1 }}>
                   {colIdx === statusColIndex ? (
                     <Chip
-                      label={statuses[rowIdx].label}
-                      color={statuses[rowIdx].color}
+                      label={statuses[rowIdx]!.label}
+                      color={statuses[rowIdx]!.color}
                       size="small"
                       variant="outlined"
                       sx={{ fontWeight: 600, fontSize: '0.72rem' }}

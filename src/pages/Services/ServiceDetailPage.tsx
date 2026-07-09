@@ -191,7 +191,7 @@ export default function ServiceDetailPage() {
               {TABS[activeTab]}
             </Typography>
             <Typography variant="body2" sx={{ color: 'text.disabled', maxWidth: 400 }}>
-              {TAB_DESCRIPTIONS[TABS[activeTab]] ?? 'Content coming soon.'}
+              {TAB_DESCRIPTIONS[TABS[activeTab] ?? ''] ?? 'Content coming soon.'}
             </Typography>
           </CardContent>
         </Card>
