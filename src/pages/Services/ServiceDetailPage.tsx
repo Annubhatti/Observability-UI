@@ -25,6 +25,7 @@ import TracesTab from "./components/tabs/TracesTab";
 import DependenciesTab from "./components/tabs/DependenciesTab";
 import DeploymentsTab from "./components/tabs/DeploymentsTab";
 import ErrorsTab from "./components/tabs/ErrorsTab";
+
 import { serviceOverviewMock } from "./mock/serviceOverviewMock";
 
 const TABS = [
@@ -36,17 +37,6 @@ const TABS = [
   "Deployments",
   "Errors",
 ] as const;
-
-const TAB_DESCRIPTIONS: Record<string, string> = {
-  Traces:
-    "Distributed traces originating from or passing through this service will be shown here.",
-  Dependencies:
-    "Upstream and downstream service dependency map will be visualized here.",
-  Deployments:
-    "Deployment history and rollout status for this service will be listed here.",
-  Errors:
-    "Error tracking and exception groups for this service will be displayed here.",
-};
 
 export default function ServiceDetailPage() {
   const theme = useTheme();
@@ -102,7 +92,11 @@ export default function ServiceDetailPage() {
 
       {/* Overview */}
       {activeTab === 0 && (
-        <Box display="flex" flexDirection="column" gap={3}>
+        <Box
+          display="flex"
+          flexDirection="column"
+          gap={3}
+        >
           <SummaryCards service={service} />
 
           <Grid container spacing={3}>
@@ -132,11 +126,17 @@ export default function ServiceDetailPage() {
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6" fontWeight={700}>
+                  <Typography
+                    variant="h6"
+                    fontWeight={700}
+                  >
                     Recent Traces
                   </Typography>
 
-                  <Typography color="text.secondary" mt={1}>
+                  <Typography
+                    color="text.secondary"
+                    mt={1}
+                  >
                     Coming in next step...
                   </Typography>
                 </CardContent>
@@ -157,11 +157,17 @@ export default function ServiceDetailPage() {
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6" fontWeight={700}>
+                  <Typography
+                    variant="h6"
+                    fontWeight={700}
+                  >
                     Dependencies
                   </Typography>
 
-                  <Typography color="text.secondary" mt={1}>
+                  <Typography
+                    color="text.secondary"
+                    mt={1}
+                  >
                     Coming in next step...
                   </Typography>
                 </CardContent>
@@ -180,11 +186,17 @@ export default function ServiceDetailPage() {
                 }}
               >
                 <CardContent>
-                  <Typography variant="h6" fontWeight={700}>
+                  <Typography
+                    variant="h6"
+                    fontWeight={700}
+                  >
                     Infrastructure
                   </Typography>
 
-                  <Typography color="text.secondary" mt={1}>
+                  <Typography
+                    color="text.secondary"
+                    mt={1}
+                  >
                     Coming in next step...
                   </Typography>
                 </CardContent>
@@ -194,7 +206,7 @@ export default function ServiceDetailPage() {
         </Box>
       )}
 
-            {/* Metrics */}
+      {/* Metrics */}
       {activeTab === 1 && <MetricsTab />}
 
       {/* Logs */}
