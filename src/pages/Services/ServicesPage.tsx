@@ -1,35 +1,99 @@
-import { useEffect } from 'react';
-import Box from '@mui/material/Box';
-import Card from '@mui/material/Card';
-import CardContent from '@mui/material/CardContent';
-import Typography from '@mui/material/Typography';
-import TextField from '@mui/material/TextField';
-import Button from '@mui/material/Button';
-import Chip from '@mui/material/Chip';
-import Skeleton from '@mui/material/Skeleton';
-import { alpha, useTheme } from '@mui/material/styles';
-import AccountTreeRounded from '@mui/icons-material/AccountTreeRounded';
-import SearchRounded from '@mui/icons-material/SearchRounded';
-import PageHeader from '../../components/common/PageHeader';
+import { useEffect, useMemo, useState } from "react";
+import { useNavigate } from "react-router-dom";
+
+import Box from "@mui/material/Box";
+import Card from "@mui/material/Card";
+import CardContent from "@mui/material/CardContent";
+import Typography from "@mui/material/Typography";
+import TextField from "@mui/material/TextField";
+import Button from "@mui/material/Button";
+import Chip from "@mui/material/Chip";
+
+import { alpha, useTheme } from "@mui/material/styles";
+
+import AccountTreeRounded from "@mui/icons-material/AccountTreeRounded";
+import SearchRounded from "@mui/icons-material/SearchRounded";
+
+import PageHeader from "../../components/common/PageHeader";
+
+import { servicesMock } from "./mock/servicesMock";
 
 const TABLE_COLUMNS = [
-  'Service',
-  'Language',
-  'Environment',
-  'Version',
-  'Requests/sec',
-  'Error Rate',
-  'Latency',
-  'Status',
-  'Last Seen',
+  "Service",
+  "Language",
+  "Environment",
+  "Version",
+  "Requests/sec",
+  "Error Rate",
+  "Latency",
+  "Status",
+  "Last Seen",
 ];
+
+interface ServiceFilters {
+  serviceName: string;
+  environment: string;
+  language: string;
+}
+
+const EMPTY_FILTERS: ServiceFilters = {
+  serviceName: "",
+  environment: "",
+  language: "",
+};
 
 export default function ServicesPage() {
   const theme = useTheme();
+  const navigate = useNavigate();
+
+  const [serviceName, setServiceName] = useState("");
+  const [environment, setEnvironment] = useState("");
+  const [language, setLanguage] = useState("");
+
+  const [filters, setFilters] =
+    useState<ServiceFilters>(EMPTY_FILTERS);
 
   useEffect(() => {
-    document.title = 'Services | Observability';
+    document.title = "Services | Observability";
   }, []);
+
+  const filteredServices = useMemo(() => {
+    return servicesMock.filter((service) => {
+      const matchesServiceName = service.name
+        .toLowerCase()
+        .includes(filters.serviceName.toLowerCase());
+
+      const matchesEnvironment = service.environment
+        .toLowerCase()
+        .includes(filters.environment.toLowerCase());
+
+      const matchesLanguage = service.language
+        .toLowerCase()
+        .includes(filters.language.toLowerCase());
+
+      return (
+        matchesServiceName &&
+        matchesEnvironment &&
+        matchesLanguage
+      );
+    });
+  }, [filters]);
+
+  const handleSearch = () => {
+    setFilters({
+      serviceName: serviceName.trim(),
+      environment: environment.trim(),
+      language: language.trim(),
+    });
+  };
+
+  const handleKeyDown = (
+    event: React.KeyboardEvent<HTMLInputElement>
+  ) => {
+    if (event.key === "Enter") {
+      handleSearch();
+    }
+  };
 
   return (
     <Box>
@@ -39,126 +103,231 @@ export default function ServicesPage() {
         subtitle="Application performance monitoring and service catalog"
       />
 
-      {/* ── Filter Bar ── */}
+      {/* Filter Bar */}
       <Card
         sx={{
           mb: 3,
-          background: alpha(theme.palette.background.paper, 0.6),
-          backdropFilter: 'blur(8px)',
+          background: alpha(
+            theme.palette.background.paper,
+            0.6
+          ),
+          backdropFilter: "blur(8px)",
         }}
       >
-        <CardContent sx={{ display: 'flex', gap: 2, flexWrap: 'wrap', alignItems: 'center', py: 1.5, '&:last-child': { pb: 1.5 } }}>
+        <CardContent
+          sx={{
+            display: "flex",
+            gap: 2,
+            flexWrap: "wrap",
+            alignItems: "center",
+            py: 1.5,
+
+            "&:last-child": {
+              pb: 1.5,
+            },
+          }}
+        >
           <TextField
             size="small"
             label="Service Name"
-            placeholder="e.g. api-gateway"
-            sx={{ minWidth: 200, flex: 1 }}
+            placeholder="e.g. Payment Service"
+            value={serviceName}
+            onChange={(event) =>
+              setServiceName(event.target.value)
+            }
+            onKeyDown={handleKeyDown}
+            sx={{
+              minWidth: 200,
+              flex: 1,
+            }}
           />
+
           <TextField
             size="small"
             label="Environment"
-            placeholder="e.g. production"
-            sx={{ minWidth: 180, flex: 1 }}
+            placeholder="e.g. Production"
+            value={environment}
+            onChange={(event) =>
+              setEnvironment(event.target.value)
+            }
+            onKeyDown={handleKeyDown}
+            sx={{
+              minWidth: 180,
+              flex: 1,
+            }}
           />
+
           <TextField
             size="small"
             label="Language"
-            placeholder="e.g. Go, Python"
-            sx={{ minWidth: 160, flex: 1 }}
+            placeholder="e.g. Java, Go, Python"
+            value={language}
+            onChange={(event) =>
+              setLanguage(event.target.value)
+            }
+            onKeyDown={handleKeyDown}
+            sx={{
+              minWidth: 160,
+              flex: 1,
+            }}
           />
+
           <Button
             variant="contained"
             startIcon={<SearchRounded />}
-            sx={{ height: 40, textTransform: 'none', fontWeight: 600, px: 3 }}
+            onClick={handleSearch}
+            sx={{
+              height: 40,
+              textTransform: "none",
+              fontWeight: 600,
+              px: 3,
+            }}
           >
             Search
           </Button>
         </CardContent>
       </Card>
 
-      {/* ── Table Card ── */}
+      {/* Table Card */}
       <Card>
-        <CardContent sx={{ p: 0, '&:last-child': { pb: 0 } }}>
+        <CardContent
+          sx={{
+            p: 0,
+
+            "&:last-child": {
+              pb: 0,
+            },
+          }}
+        >
           {/* Header Row */}
           <Box
             sx={{
-              display: 'grid',
-              gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1.2fr',
+              display: "grid",
+              gridTemplateColumns:
+                "2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1.2fr",
               gap: 1,
               px: 2.5,
               py: 1.5,
               borderBottom: `1px solid ${theme.palette.divider}`,
-              background: alpha(theme.palette.primary.main, 0.04),
+              background: alpha(
+                theme.palette.primary.main,
+                0.04
+              ),
             }}
           >
-            {TABLE_COLUMNS.map((col) => (
+            {TABLE_COLUMNS.map((column) => (
               <Typography
-                key={col}
+                key={column}
                 variant="caption"
                 sx={{
                   fontWeight: 700,
-                  textTransform: 'uppercase',
+                  textTransform: "uppercase",
                   letterSpacing: 0.5,
-                  color: 'text.secondary',
+                  color: "text.secondary",
                 }}
               >
-                {col}
+                {column}
               </Typography>
             ))}
           </Box>
 
-          {/* Skeleton Rows */}
-          {Array.from({ length: 6 }).map((_, rowIdx) => (
+          {/* Service Rows */}
+          {filteredServices.map((service) => (
             <Box
-              key={rowIdx}
+              key={service.id}
+              onClick={() =>
+                navigate(`/services/${service.id}`)
+              }
               sx={{
-                display: 'grid',
-                gridTemplateColumns: '2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1.2fr',
+                display: "grid",
+                gridTemplateColumns:
+                  "2fr 1fr 1fr 1fr 1fr 1fr 1fr 1fr 1.2fr",
                 gap: 1,
                 px: 2.5,
-                py: 1.5,
-                alignItems: 'center',
-                borderBottom: rowIdx < 5 ? `1px solid ${theme.palette.divider}` : 'none',
-                opacity: 1 - rowIdx * 0.1,
-                '&:hover': {
-                  background: alpha(theme.palette.action.hover, 0.04),
+                py: 1.6,
+                alignItems: "center",
+                cursor: "pointer",
+                borderBottom: `1px solid ${theme.palette.divider}`,
+                transition: "0.2s",
+
+                "&:hover": {
+                  background: alpha(
+                    theme.palette.primary.main,
+                    0.05
+                  ),
                 },
               }}
             >
-              {TABLE_COLUMNS.map((col, colIdx) => {
-                if (col === 'Status') {
-                  return (
-                    <Chip
-                      key={colIdx}
-                      size="small"
-                      label={
-                        <Skeleton
-                          variant="text"
-                          width={40}
-                          sx={{ bgcolor: 'transparent' }}
-                        />
-                      }
-                      sx={{
-                        bgcolor: alpha(theme.palette.success.main, 0.1),
-                        color: theme.palette.success.main,
-                        fontWeight: 600,
-                        width: 72,
-                        height: 24,
-                      }}
-                    />
-                  );
+              <Typography fontWeight={600}>
+                {service.name}
+              </Typography>
+
+              <Typography>
+                {service.language}
+              </Typography>
+
+              <Typography>
+                {service.environment}
+              </Typography>
+
+              <Typography>
+                {service.version}
+              </Typography>
+
+              <Typography>
+                {service.requests}
+              </Typography>
+
+              <Typography>
+                {service.errorRate}
+              </Typography>
+
+              <Typography>
+                {service.latency}
+              </Typography>
+
+              <Chip
+                label={service.status}
+                size="small"
+                color={
+                  service.status === "Healthy"
+                    ? "success"
+                    : service.status === "Warning"
+                      ? "warning"
+                      : "error"
                 }
-                return (
-                  <Skeleton
-                    key={colIdx}
-                    variant="text"
-                    width={col === 'Service' ? '80%' : '60%'}
-                    sx={{ borderRadius: 0.5 }}
-                  />
-                );
-              })}
+              />
+
+              <Typography>
+                {service.lastSeen}
+              </Typography>
             </Box>
           ))}
+
+          {/* Empty State */}
+          {filteredServices.length === 0 && (
+            <Box
+              sx={{
+                py: 6,
+                textAlign: "center",
+              }}
+            >
+              <Typography
+                variant="h6"
+                fontWeight={600}
+              >
+                No services found
+              </Typography>
+
+              <Typography
+                variant="body2"
+                color="text.secondary"
+                mt={1}
+              >
+                Try changing your search filters.
+              </Typography>
+            </Box>
+          )}
         </CardContent>
       </Card>
     </Box>
